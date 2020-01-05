@@ -1,0 +1,35 @@
+.Window_Xterm {
+  background-color: transparent;
+
+  .osjs-window-header {
+    background: #c1c1c1;
+  }
+  .osjs-window-content {
+    background: rgba(0, 0, 0, 0.3);
+  }
+
+  .osjs-window-resize[data-direction=e] {
+    min-width: 0.75em;  /* leave room for user to grab the scrollbar */
+  }
+
+  .xterm {
+    padding-left: 2px;
+
+    .xterm-viewport {
+      &::-webkit-scrollbar-track {
+        background: #888;
+        border-top: none;
+        border-bottom: 1px solid #8f8f8f;
+      }
+      &::-webkit-scrollbar-track-piece {
+        background: unset;
+      }
+      &::-webkit-scrollbar-thumb {
+        background: linear-gradient(180deg,#ddd 0,#bbb);
+        border: 1px solid #aaa;
+      }
+    }
+  }
+
+  @import 'xterm/dist/xterm.css';
+}

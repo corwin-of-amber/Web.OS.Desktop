@@ -1,0 +1,12 @@
+{
+  "name": "Terminal",
+  "category": "network",
+  "singleton": true,
+  "title": {
+    "en_EN": "Terminal Emulator"
+  },
+  "description": {
+    "en_EN": "Based on xterm.js"
+  },
+  "files": []
+}
