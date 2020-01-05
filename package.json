@@ -1,0 +1,24 @@
+{
+  "name": "basin-desktop",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@osjs/client": "file:ext/osjs-client",
+    "@osjs/dialogs": "^3.0.15",
+    "@osjs/gnome-icons": "^4.0.2",
+    "@osjs/gui": "file:ext/osjs-gui",
+    "@osjs/panels": "file:ext/osjs-panels",
+    "@osjs/standard-theme": "^4.0.6",
+    "@osjs/xterm-application": "^1.1.15",
+    "osjs-deps": "file:ext/osjs-deps"
+  },
+  "devDependencies": {
+    "sass": "^1.24.2"
+  }
+}

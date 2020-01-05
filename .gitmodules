@@ -1,0 +1,9 @@
+[submodule "ext/osjs-client"]
+	path = ext/osjs-client
+	url = https://github.com/os-js/osjs-client.git
+[submodule "ext/osjs-gui"]
+	path = ext/osjs-gui
+	url = https://github.com/os-js/osjs-gui.git
+[submodule "ext/osjs-panels"]
+	path = ext/osjs-panels
+	url = https://github.com/os-js/osjs-panels.git
