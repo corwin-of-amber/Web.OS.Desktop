@@ -1,3 +1,5 @@
+// build with
+// parcel -p 8009 src/index.html
 //
 // This is the client bootstrapping script.
 // Based on:
@@ -20,11 +22,10 @@ import {DialogServiceProvider} from '@osjs/dialogs';
 
 import '@osjs/gui/index.scss';  // this is not loaded by default in @osjs/gui
 
-//import '@osjs/xterm-application';
-
 import './index.css';
 import config from './config.js';
-//import XtermApp from './sample-app';
+import { startx } from './startup';
+
 
 
 const init = async () => {
@@ -46,11 +47,18 @@ const init = async () => {
 
   osjs.boot();
 
-  var xterm = import('./xterm-app');
+  //var xterm = import('./xterm-app');
 
   osjs.on('osjs/core:started', async () => {
+    startx(osjs);/*
     await xterm;
-    window.xterm = await osjs.run('Terminal');
+    window.xterm = xterm = await osjs.run('Terminal');
+    setTimeout(() => {
+      console.log(xterm.windows[0].term);
+      var t = new TtyShell();
+      t.attach(xterm.windows[0].term);
+      t.start();
+    }, 1000);*/
   });
 };
 

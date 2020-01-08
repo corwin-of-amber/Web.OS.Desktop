@@ -1,4 +1,4 @@
-.Window_Xterm {
+.osjs-window.Window_Xterm {
   background-color: transparent;
 
   .osjs-window-header {
@@ -31,5 +31,5 @@
     }
   }
 
-  @import 'xterm/dist/xterm.css';
+  @import 'xterm/css/xterm.css';
 }

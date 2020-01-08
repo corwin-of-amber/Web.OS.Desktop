@@ -7,8 +7,8 @@ let osjs = window.OSjs;
 
 import './index.scss';
 import {Terminal} from 'xterm';
-import * as fit from 'xterm/lib/addons/fit/fit';
-import * as attach from 'xterm/lib/addons/attach/attach';
+import { FitAddon } from 'xterm-addon-fit';
+//import { AttachAddon } from 'xterm-addon-attach';
 import * as clipboard from 'clipboard-polyfill';
 import {name as applicationName} from './metadata.json';
 
@@ -20,15 +20,16 @@ const createTerminal = (core, proc, index) => {
   const term = new Terminal({
     allowTransparency: true,
     theme: {
-      background: 'rgba(0, 0, 0, 0.3'
+      background: 'rgba(0, 0, 0, 0.3)'
     }
   });
 
-  term.on('data', (d) =>  { console.log(d); term.write(d); });
+  var fitAddon = new FitAddon();
+  term.loadAddon(fitAddon);
 
   const fit = () => {
     setTimeout(() => {
-      term.fit();
+      fitAddon.fit();
       term.focus();
       snap()
     }, 100);
@@ -48,7 +49,7 @@ const createTerminal = (core, proc, index) => {
 
   const render = ($content) => {
     term.open($content);
-    term.fit();
+    fitAddon.fit();
     term.focus();
 
     $content.addEventListener('contextmenu', ev => {
@@ -98,16 +99,14 @@ const createTerminal = (core, proc, index) => {
   win.term = term;
 
   // sample output
-  const fs = require('fs'), txt = fs.readFileSync('./src/index.js', 'utf-8');
-  term.write(txt.replace(/\n/g, '\r\n'));
+  /*const fs = require('fs'), txt = fs.readFileSync('./src/index.js', 'utf-8');
+  term.write(txt.replace(/\n/g, '\r\n'));*/
 };
 
 //
 // Callback for launching application
 //
 osjs.register(applicationName, (core, args, options, metadata) => {
-  Terminal.applyAddon(fit);
-  Terminal.applyAddon(attach);
 
   const proc = core.make('osjs/application', {
     args,

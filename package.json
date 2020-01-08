@@ -19,6 +19,12 @@
     "osjs-deps": "file:ext/osjs-deps"
   },
   "devDependencies": {
-    "sass": "^1.24.2"
-  }
+    "cssnano": "^4.1.10",
+    "sass": "^1.24.2",
+    "typescript": "^3.7.4"
+  },
+  "browserslist": [
+    "Chrome 78"
+  ],
+  "_comment": "Run `npm dedupe` to flatten deps"
 }

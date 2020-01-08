@@ -5,7 +5,9 @@
   "dependencies": {
     "clipboard-polyfill": "^2.8.6",
     "uuid": "^3.3.3",
-    "xterm": "^3.14.5"
+    "xterm": "^4.2.0",
+    "xterm-addon-attach": "^0.4.0",
+    "xterm-addon-fit": "^0.3.0"
   },
   "author": "Anders Evenrud <andersevenrud@gmail.com>",
   "license": "MIT",
