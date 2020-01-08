@@ -30,23 +30,26 @@ const createTerminal = (core, proc, index) => {
     setTimeout(() => {
       term.fit();
       term.focus();
-      win.$element.style.height = '';
-      win.$element.style.width = '';
-      snap(win.$content)
+      snap()
     }, 100);
   };
 
-  function snap($content) {
+  function snap() {
+    win.$element.style.height = '';
+    win.$element.style.width = '';
+
     var box = term.element.querySelector('.xterm-screen').getBoundingClientRect();
-    $content.style.width = `${box.width + 13}px`;
+    win.$content.style.width = `calc(${box.width + 2}px + 1em)`; // make room for scrollbar
+
+    win.resizeFit(win.$content);
+    // Bug in resizeFit -- does not account for border
+    win.setDimension({width: win.state.dimension.width + 2, height: win.state.dimension.height + 2});
   }
 
   const render = ($content) => {
     term.open($content);
     term.fit();
     term.focus();
-
-    snap($content);
 
     $content.addEventListener('contextmenu', ev => {
       ev.preventDefault();
@@ -81,9 +84,8 @@ const createTerminal = (core, proc, index) => {
     .on('moved', () => term.focus())
     .on('focus', () => term.focus())
     .on('blur', () => term.blur())
-    .on('render', (win) => {
-      win.$element.style.width = '';
-      win.$element.style.height = '';
+    .on('render', () => {
+      snap();
       win.focus();
     })
     .render(render);
