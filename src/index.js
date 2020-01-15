@@ -50,17 +50,9 @@ const init = async () => {
   //var xterm = import('./xterm-app');
 
   osjs.on('osjs/core:started', async () => {
-    startx(osjs);/*
-    await xterm;
-    window.xterm = xterm = await osjs.run('Terminal');
-    setTimeout(() => {
-      console.log(xterm.windows[0].term);
-      var t = new TtyShell();
-      t.attach(xterm.windows[0].term);
-      t.start();
-    }, 1000);*/
+    startx(osjs);
   });
 };
 
 
-window.addEventListener('DOMContentLoaded', () => init());
+window.addEventListener('DOMContentLoaded', init);
