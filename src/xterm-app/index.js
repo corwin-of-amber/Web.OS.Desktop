@@ -40,7 +40,7 @@ const createTerminal = (core, proc, index) => {
     win.$element.style.width = '';
 
     var box = term.element.querySelector('.xterm-screen').getBoundingClientRect();
-    win.$content.style.width = `calc(${box.width + 2}px + 1em)`; // make room for scrollbar
+    win.$content.style.width = `calc(${box.width + 4}px + 1em)`; // make room for padding and scrollbar
 
     win.resizeFit(win.$content);
     // Bug in resizeFit -- does not account for border
