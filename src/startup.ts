@@ -1,7 +1,6 @@
-import { Core, Window } from '@osjs/client';
-import { Terminal } from 'xterm';
-import { Shell, TtyShell } from 'basin-shell/src/shell';
+import { Core } from '@osjs/client';
 import { Resource, ResourceBundle } from 'basin-shell/src/package-mgr';
+import { WASITerminal } from './wasi-terminal';
 
 
 
@@ -10,24 +9,10 @@ async function startx(osjs: Core) {
 
     await new Promise(resolve => window.requestAnimationFrame(resolve));
 
-    runWASITerminal(osjs);
+    var xterm = new WASITerminal(osjs, packageBundles);
+    Object.assign(window, {xterm});
 }
 
-async function runWASITerminal(osjs: Core) {
-    var proc = await osjs.run('Terminal');
-    proc.on('create-window', (win: Window & {term: Terminal, shell: Shell}) => {
-        win.on('render', async () => {
-            var term = win.term;
-            var shell = new TtyShell();
-            for (let pkg of Object.values(packageBundles))
-                shell.packageManager.install(pkg);
-            shell.attach(term);
-            shell.start();
-            win.shell = shell;
-        });
-    });
-    Object.assign(window, {xterm: proc});
-}
 
 const ocaml = '/usr/local/lib/ocaml/';
 
