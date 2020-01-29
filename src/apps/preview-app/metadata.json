@@ -1,0 +1,12 @@
+{
+  "name": "Preview",
+  "category": "graphics",
+  "singleton": true,
+  "title": {
+    "en_EN": "Preview"
+  },
+  "description": {
+    "en_EN": "Image and PDF viewer"
+  },
+  "files": []
+}

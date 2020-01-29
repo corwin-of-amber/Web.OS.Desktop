@@ -6,6 +6,7 @@ import { WASITerminal } from './wasi-terminal';
 
 async function startx(osjs: Core) {
     await import('./apps/xterm-app');
+    await import('./apps/preview-app');
 
     await new Promise(resolve => window.requestAnimationFrame(resolve));
 
