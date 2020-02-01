@@ -1,3 +1,4 @@
+import { EventEmitter } from 'events';
 import { Core, Window, Application } from '@osjs/client';
 import { Terminal } from 'xterm';
 import { Shell, TtyShell } from 'basin-shell/src/shell';
@@ -12,14 +13,15 @@ class WASITerminal {
 
     constructor(osjs: Core, distro: {[name: string]: ResourceBundle}) {
         this.distro = distro;
-        this.start(osjs);
+        this.start(osjs as Core & EventEmitter);
     }
 
-    async start(osjs: Core) {
+    async start(osjs: Core & EventEmitter) {
         this.proc = await osjs.run('Terminal');
         this.proc.on('create-window', (win: ShellWindow) => {
             win.on('render', async () => {
                 win.shell = this.createShell(win.term);
+                osjs.emit('wasi/login', {shell: win.shell});
             });
         });
     }

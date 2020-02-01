@@ -24,6 +24,7 @@ import '@osjs/gui/index.scss';  // this is not loaded by default in @osjs/gui
 
 import './index.css';
 import config from './config.js';
+import { WasmFsAdapter } from './wasi-fs-adapter';
 import { startx } from './startup';
 
 
@@ -37,7 +38,13 @@ const init = async () => {
   osjs.register(CoreServiceProvider);
   osjs.register(DesktopServiceProvider);
   osjs.register(SettingsServiceProvider, {before: true});
-  osjs.register(VFSServiceProvider);
+  osjs.register(VFSServiceProvider, {
+    args: {
+      adapters: {
+        wasi: WasmFsAdapter.factory
+      }
+    }
+  });
 
   osjs.register(NotificationServiceProvider);
   osjs.register(AuthServiceProvider, {before: true});
