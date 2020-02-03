@@ -28,6 +28,7 @@ class WASITerminal {
 
     createShell(term: Terminal) {
         var shell = new TtyShell();
+        shell.env.ENV = '/home/.dashrc';
         if (this.shell)
             shell.volume = this.shell.volume;
         else
@@ -39,9 +40,16 @@ class WASITerminal {
         return shell;
     }
 
-    prepareVolume(shell: Shell) {
-        for (let pkg of Object.values(this.distro))
-            shell.packageManager.install(pkg);
+    async prepareVolume(shell: Shell) {
+        var div = document.createElement('div');
+        div.classList.add("notification--download");
+        document.body.appendChild(div);
+        for (let e of Object.entries(this.distro)) {
+            let [name, pkg] = e;
+            div.textContent = "Downloading " + name;
+            await shell.packageManager.install(pkg);
+        }
+        div.remove();
     }
 
     get shell() {

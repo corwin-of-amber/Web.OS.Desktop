@@ -6,3 +6,22 @@ html, body {
 .osjs-window-header {
     min-height: unset;
 }
+
+.osjs-window-header .osjs-window-title {
+    min-height: 1.1em;
+}
+
+html .osjs-window[data-focused=false] {
+    opacity: 0.9; /* sorry Andres */
+}
+
+div.notification--download {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    font-size: 12px;
+    padding: 4px;
+    padding-right: 2em;
+    background: #eee;
+    color: #444;
+}

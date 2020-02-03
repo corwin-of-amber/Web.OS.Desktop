@@ -74,7 +74,7 @@ const createTerminal = (core, proc, index) => {
   var win = proc.createWindow({
     id: 'Xterm_' + String(index),
     title: proc.metadata.title.en_EN,
-    dimension: {width: 600, height: 288},
+    dimension: {width: 600, height: 340},
     attributes: {
       classNames: ['Window_Xterm']
     }
