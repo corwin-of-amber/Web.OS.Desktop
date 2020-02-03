@@ -8,5 +8,6 @@
   "description": {
     "en_EN": "Image and PDF viewer"
   },
-  "files": []
+  "files": [],
+  "mimes": ["application/pdf"]
 }

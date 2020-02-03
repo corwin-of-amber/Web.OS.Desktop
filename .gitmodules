@@ -7,3 +7,6 @@
 [submodule "ext/osjs-panels"]
 	path = ext/osjs-panels
 	url = https://github.com/os-js/osjs-panels.git
+[submodule "ext/osjs-filemanager-application"]
+	path = ext/osjs-filemanager-application
+	url = git@github.com:corwin-of-amber/osjs-filemanager-application.git

@@ -20,9 +20,9 @@ function createWindow(core, proc, args) {
     win.$content.appendChild(iframe);
     win.iframe = iframe;
 
-    if (args && args.filename) {
+    if (args && args.file) {
         (async () => {
-            var blob = await osjs.make('osjs/vfs').readfile(args.filename, 'blob');
+            var blob = await osjs.make('osjs/vfs').readfile(args.file, 'blob');
             win.iframe.src = URL.createObjectURL(blob);
         })();
     }

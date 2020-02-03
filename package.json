@@ -11,6 +11,7 @@
   "dependencies": {
     "@osjs/client": "file:ext/osjs-client",
     "@osjs/dialogs": "^3.0.15",
+    "@osjs/filemanager-application": "file:ext/osjs-filemanager-application",
     "@osjs/gnome-icons": "^4.0.2",
     "@osjs/gui": "file:ext/osjs-gui",
     "@osjs/panels": "file:ext/osjs-panels",

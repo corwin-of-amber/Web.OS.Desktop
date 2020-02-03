@@ -1,9 +1,10 @@
 [
   {"type":"theme","name":"StandardTheme","title":{"en_EN":"Standard Theme","fr_FR":"Thème Standard","de_DE":"Standard-Thema","sl_SI":"Standardna Tema"},"description":{"en_EN":"Standard Theme","fr_FR":"Thème Standard","de_DE":"Standard-Thema","sl_SI":"Standardna Tema"},"files":["main.js","main.css"]},
   {"type":"icons","name":"GnomeIcons","title":{"en_EN":"Gnome Icons","fr_FR":"Icônes du bureau Gnome","sl_SI":"Ikone Gnome"},"description":{"en_EN":"Gnome Icons","fr_FR":"Icônes du bureau Gnome","sl_SI":"Ikone Gnome"},"files":["main.css"]},
+  {"name":"FileManager","category":"utilities","icon":"icon.png","title":{"en_EN":"File Manager","nb_NO":"Filbehandler","fr_FR":"Gestionnaire de fichiers","de_DE":"Dateimanager","vi_VN":"Quản lý tập tin"},"description":{"en_EN":"File Manager","nb_NO":"Behandle filer","fr_FR":"Gestionnaire de fichiers","de_DE":"Dateimanager","vi_VN":"Ứng dụng quản lý tập tin"},"files":["main.js","main.css"]},
   {
     "name": "Terminal",
-    "category": "network",
+    "category": "utilities",
     "singleton": true,
     "title": {
       "en_EN": "Terminal Emulator"
@@ -23,6 +24,7 @@
     "description": {
       "en_EN": "Image and PDF viewer"
     },
-    "files": []
+    "files": [],
+    "mimes": ["application/pdf"]
   }
 ]

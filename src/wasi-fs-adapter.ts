@@ -16,17 +16,19 @@ class WasmFsAdapter {
     }
 
     async readdir({path}, options: {}) { 
-        path = path.replace(/^\w+:/, '');
-        var ls = await this.volume.promises.readdir(path) as (string | {name: string})[];
+        var physical = path.replace(/^\w+:/, '');
+        var ls = await this.volume.promises.readdir(physical) as (string | {name: string})[];
         return ls.map(entry => {
-            var fn = typeof(entry) === 'string' ? entry : entry.name;
+            var fn = typeof(entry) === 'string' ? entry : entry.name,
+                stat = this.stat(`${physical}/${fn}`);
             return {
-                isDirectory: false,
-                isFile: true,
+                isDirectory: stat && stat.isDirectory(),
+                isFile: stat && stat.isFile(),
                 filename: fn,
                 path: `${path.replace(/(\/+)?$/, '/')}${fn}`,
-                size: 0,
-                stat: {}
+                size: stat ? stat.size : 0,
+                mime: this.guessMimeFromFilename(fn),
+                stat: stat
             }
         });
     }
@@ -35,6 +37,13 @@ class WasmFsAdapter {
         path = path.replace(/^\w+:/, '');
         var bytes = await this.volume.promises.readFile(path);
         return {body: bytes, mime: this.guessMimeFromFilename(path)};
+    }
+
+    stat(filename) {
+        try {
+            return this.volume.statSync(filename);
+        }
+        catch (e) { return undefined; }
     }
 
     guessMimeFromFilename(filename: string) {
@@ -46,6 +55,7 @@ class WasmFsAdapter {
 
     attach(volume: SharedVolume) {
         this.volume = volume;
+        volume.mkdirpSync('/home');
     }
 
 /*
