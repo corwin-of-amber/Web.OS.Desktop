@@ -1,4 +1,3 @@
-import * as fs from 'fs';
 import { Shell } from 'basin-shell/src/shell';
 import { SharedVolume } from 'wasi-kernel/src/kernel/services/shared-fs';
 
@@ -11,7 +10,10 @@ class WasmFsAdapter {
 
     constructor() {
         this.extensions = {
-            '.pdf': {mime: 'application/pdf'}
+            '.pdf': {mime: 'application/pdf'},
+            '.py': {mime: 'text/python'},
+            '.ml': {mime: 'text/ocaml'},
+            '.tex': {mime: 'text/tex'}
         };
     }
 
@@ -20,7 +22,7 @@ class WasmFsAdapter {
         var ls = await this.volume.promises.readdir(physical) as (string | {name: string})[];
         return ls.map(entry => {
             var fn = typeof(entry) === 'string' ? entry : entry.name,
-                stat = this.stat(`${physical}/${fn}`);
+                stat = this.statPhysical({path: `${physical}/${fn}`});
             return {
                 isDirectory: stat && stat.isDirectory(),
                 isFile: stat && stat.isFile(),
@@ -39,9 +41,34 @@ class WasmFsAdapter {
         return {body: bytes, mime: this.guessMimeFromFilename(path)};
     }
 
-    stat(filename) {
+    async writefile({path}, data: Blob, options) {
+        path = path.replace(/^\w+:/, '');
+        var buf = new Uint8Array(await data.arrayBuffer());
+        await this.volume.writeFile(path, buf, () => {});
+        return 0;
+    }
+
+    async stat({path}) {
+        var physical = path.replace(/^\w+:/, ''),
+            stat = await this.volume.promises.stat(physical);
+        return {
+            isDirectory: stat && stat.isDirectory(),
+            isFile: stat && stat.isFile(),
+            path: path,
+            size: stat ? stat.size : 0,
+            mime: this.guessMimeFromFilename(physical),
+            stat: stat
+        };
+    }
+
+    statSync({path}) {
+        var physical = path.replace(/^\w+:/, '');
+        return this.volume.statSync(physical);
+    }
+
+    statPhysical(filename) {
         try {
-            return this.volume.statSync(filename);
+            return this.statSync(filename);
         }
         catch (e) { return undefined; }
     }
@@ -82,7 +109,9 @@ class WasmFsAdapter {
         Object.assign(window, {adapter});
         return {
             readdir: (path, options) => adapter.readdir(path, options),
-            readfile: (path, type, options) => adapter.readfile(path, type, options)
+            readfile: (file, type, options) => adapter.readfile(file, type, options),
+            writefile: (file, data, options) => adapter.writefile(file, data, options),
+            stat: (filename) => adapter.stat(filename)
         };
     }
 
