@@ -1,5 +1,5 @@
-import { Shell } from 'basin-shell/src/shell';
-import { SharedVolume } from 'wasi-kernel/src/kernel/services/shared-fs';
+//import { Shell } from 'basin-shell/src/shell';
+import { SharedVolume } from 'wasi-kernel';
 
 
 
@@ -82,7 +82,7 @@ class WasmFsAdapter {
 
     attach(volume: SharedVolume) {
         this.volume = volume;
-        volume.mkdirpSync('/home');
+        volume.mkdirSync('/home', {recursive: true});
     }
 
 /*

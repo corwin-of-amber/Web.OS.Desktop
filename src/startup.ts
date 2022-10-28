@@ -1,11 +1,15 @@
 import { Core as CoreImpl, Application } from '@osjs/client';
-import { Resource, ResourceBundle } from 'basin-shell/src/package-mgr';
+//import { Resource, ResourceBundle } from 'basin-shell/src/package-mgr';
+import { Resource, ResourceBundle } from 'wasi-kernel/src/kernel/services/package-mgr';
 import { WASITerminal } from './wasi-terminal';
+
+import './apps/xterm-app/index.scss';
+import 'xterm/css/xterm.css';
 
 
 declare interface Core extends CoreImpl {
     make(key: string): any
-    run(app: string, args: {}): Application
+    run(app: string, args?: {}, options?: any): Promise<Application>
 }
 
 
@@ -14,18 +18,18 @@ async function startx(osjs: Core) {
     if (locale.getLocale() === 'he_HE') locale.setLocale('en_EN');
 
     await import('./apps/xterm-app');
-    await import('./apps/preview-app');
+    //await import('./apps/preview-app');
 
     await new Promise(resolve => window.requestAnimationFrame(resolve));
 
     var xterm = new WASITerminal(osjs, packageBundles);
     Object.assign(window, {xterm});
 
-    var fm = await osjs.run('FileManager', {path: {path: 'wasi:/home'}});
-    fm.windows[0].setPosition({left: 620, top: 36});
-    Object.assign(window, {fm});
+    //var fm = await osjs.run('FileManager', {path: {path: 'wasi:/home'}});
+    //fm.windows[0].setPosition({left: 620, top: 36});
+    //Object.assign(window, {fm});
 
-    setActiveInterval((<any>fm).refresh, 2500);
+    //setActiveInterval((<any>fm).refresh, 2500);
 }
 
 /**
@@ -85,7 +89,7 @@ var packageBundles: {[name: string]: ResourceBundle} = {
         '/bin/ocaml':            `#!/bin/ocaml/ocamlrun.wasm ${ocaml}ocaml`,
         '/bin/ocamlc':           `#!/bin/ocaml/ocamlrun.wasm ${ocaml}ocamlc`,
         [ocaml+'camlheader']:    '#!/bin/ocaml/ocamlrun.wasm\n',
-        [ocaml+'/']:             new Resource('/bin/ocaml/dist.zip')
+        [ocaml+'/']:             new Resource('/bin/ocaml/base.zip')
     },
 
     'tex': {

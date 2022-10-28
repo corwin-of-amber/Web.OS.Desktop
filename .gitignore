@@ -1,5 +1,9 @@
 node_modules
 /dist
 /public
+/build
+/bin
 .cache
 .*.swp
+.parcel-cache
+_npmlink

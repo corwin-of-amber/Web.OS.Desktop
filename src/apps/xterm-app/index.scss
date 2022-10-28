@@ -1,3 +1,5 @@
+@import 'xterm/css/xterm.css';
+
 .osjs-window.Window_Xterm {
   background-color: transparent;
 
@@ -30,6 +32,4 @@
       }
     }
   }
-
-  @import 'xterm/css/xterm.css';
 }

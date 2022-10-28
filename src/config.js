@@ -6,6 +6,7 @@ export default {
     }
   },
   standalone: true,
+  /*
   packages: {
     manifest: false,
     metadata: require('./metadata.json')
@@ -17,6 +18,6 @@ export default {
       adapter: 'wasi',
       attributes: {}
     }]
-  },
+  },*/
   development: true   /* OS.js developer tools */
 };

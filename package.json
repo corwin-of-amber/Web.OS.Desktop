@@ -9,21 +9,23 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@osjs/ace-application": "^1.2.7",
     "@osjs/client": "file:ext/osjs-client",
-    "@osjs/dialogs": "^3.0.15",
+    "@osjs/dialogs": "^3.1.2",
     "@osjs/filemanager-application": "file:ext/osjs-filemanager-application",
-    "@osjs/gnome-icons": "^4.0.2",
+    "@osjs/gnome-icons": "^4.0.5",
     "@osjs/gui": "file:ext/osjs-gui",
     "@osjs/panels": "file:ext/osjs-panels",
-    "@osjs/standard-theme": "^4.0.6",
-    "@osjs/xterm-application": "^1.1.15",
-    "osjs-deps": "file:ext/osjs-deps"
+    "@osjs/standard-theme": "^4.0.9",
+    "xterm": "^5.0.0"
   },
   "devDependencies": {
-    "cssnano": "^4.1.10",
-    "sass": "^1.24.2",
-    "typescript": "^3.7.4"
+    "@osjs/dev-meta": "^2.3.2",
+    "@parcel/transformer-sass": "^2.7.0",
+    "copy-webpack-plugin": "^6.3.2",
+    "cssnano": "^5.1.13",
+    "parcel": "^2.7.0",
+    "sass": "^1.55.0",
+    "typescript": "^4.8.4"
   },
   "browserslist": [
     "Chrome 78"
