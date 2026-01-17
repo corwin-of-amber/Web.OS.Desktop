@@ -2,6 +2,7 @@
 
 .osjs-window.Window_Xterm {
   background-color: transparent;
+  overflow: hidden; /* to force rounded corners to show */
 
   .osjs-window-header {
     background: #ebebeb;  /* ugh this is specific to StandardTheme */

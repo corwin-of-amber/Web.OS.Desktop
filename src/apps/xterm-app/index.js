@@ -3,8 +3,6 @@
  * https://github.com/os-js/osjs-xterm-application
  */
 
-let osjs = window.OSjs;
-
 import './index.scss';
 import {Terminal} from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
@@ -106,7 +104,7 @@ const createTerminal = (core, proc, index) => {
 //
 // Callback for launching application
 //
-osjs.register(applicationName, (core, args, options, metadata) => {
+OSjs.register(applicationName, (core, args, options, metadata) => {
 
   const proc = core.make('osjs/application', {
     args,
@@ -122,8 +120,7 @@ osjs.register(applicationName, (core, args, options, metadata) => {
 
   const createWindow = () => createTerminal(core, proc, proc.windows.length);
 
-  setTimeout(() => createWindow(), 10);
-
+  createWindow();
   proc.on('attention', () => createWindow());
 
   return proc;

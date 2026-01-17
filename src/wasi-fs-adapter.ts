@@ -1,11 +1,11 @@
 //import { Shell } from 'basin-shell/src/shell';
-import { SharedVolume } from 'wasi-kernel';
-
+//import { SharedVolume } from 'wasi-kernel';
+type Volume = any  /** @todo */
 
 
 class WasmFsAdapter {
 
-    volume: SharedVolume
+    volume: Volume
     extensions: {[ext: string]: {mime: string}}
 
     constructor() {
@@ -18,6 +18,7 @@ class WasmFsAdapter {
     }
 
     async readdir({path}, options: {}) { 
+        if (!this.volume) return []; // wait for volume? new Promise(() => {});
         var physical = path.replace(/^\w+:/, '');
         var ls = await this.volume.promises.readdir(physical) as (string | {name: string})[];
         return ls.map(entry => {
@@ -80,7 +81,7 @@ class WasmFsAdapter {
         return (attr && attr.mime) || 'application/octet-stream';
     }
 
-    attach(volume: SharedVolume) {
+    attach(volume: Volume) {
         this.volume = volume;
         volume.mkdirSync('/home', {recursive: true});
     }
@@ -102,17 +103,14 @@ class WasmFsAdapter {
 */
     static factory(core) {
         var adapter = new WasmFsAdapter();
-        core.on('wasi/login', ({shell}: {shell: Shell}) => {
+        core.on('wasi/login', ({shell}: {shell: any}) => {
             console.log('wasi attach', shell);
             adapter.attach(shell.volume);
         });
         Object.assign(window, {adapter});
-        return {
-            readdir: (path, options) => adapter.readdir(path, options),
-            readfile: (file, type, options) => adapter.readfile(file, type, options),
-            writefile: (file, data, options) => adapter.writefile(file, data, options),
-            stat: (filename) => adapter.stat(filename)
-        };
+        // methods need to be bound in returned object
+        return Object.fromEntries(['readdir', 'readfile', 'writefile', 'stat']
+            .map(m => [m, adapter[m].bind(adapter)]));
     }
 
 }

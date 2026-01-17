@@ -24,27 +24,30 @@ import '@osjs/gui/index.scss';  // this is not loaded by default in @osjs/gui
 
 import './index.css';
 import config from './config.js';
-//import { WasmFsAdapter } from './wasi-fs-adapter';
+import { WasmFsAdapter } from './wasi-fs-adapter';
 import { startx } from './startup';
+
+global.process = require('process');
 
 
 
 const init = async () => {
   const osjs = new Core(config, {});
 
+  // @ts-ignore   @todo need to add decl file
   window.osjs = osjs;
 
   // Register your service providers
   osjs.register(CoreServiceProvider);
   osjs.register(DesktopServiceProvider);
   osjs.register(SettingsServiceProvider, {before: true});
-  osjs.register(VFSServiceProvider /*, {
+  osjs.register(VFSServiceProvider, {
     args: {
       adapters: {
         wasi: WasmFsAdapter.factory
       }
     }
-  }*/);
+  });
 
   osjs.register(NotificationServiceProvider);
   osjs.register(AuthServiceProvider, {before: true});
