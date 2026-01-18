@@ -5,6 +5,10 @@ import { Core as CoreImpl, Application } from '@osjs/client';
 import './apps/xterm-app/index.scss';
 import 'xterm/css/xterm.css';
 
+import { DummyTerminal } from './shell/wasi-bindings';
+import { TerminalApplication } from './apps/xterm-app';
+import { Terminal } from 'xterm';
+
 
 declare interface Core extends CoreImpl {
     make(key: string): any
@@ -16,7 +20,7 @@ async function startx(osjs: Core) {
     const locale = osjs.make('osjs/locale');
     if (locale.getLocale() === 'he_HE') locale.setLocale('en_EN');
 
-    await import('./apps/xterm-app/index.js');
+    await import('./apps/xterm-app');
     //await import('./apps/preview-app');
 
     await new Promise(resolve => window.requestAnimationFrame(resolve));
@@ -24,7 +28,7 @@ async function startx(osjs: Core) {
     //var xterm = new WASITerminal(osjs, distro);
     //Object.assign(window, {xterm});
 
-    let term = await osjs.run('Terminal'),
+    let term = await osjs.run('Terminal') as TerminalApplication,
         termRect = term.windows[0].$element.getBoundingClientRect(),
         fm = await osjs.run('FileManager', {path: {path: 'wasi:/home'}});
 
@@ -32,6 +36,12 @@ async function startx(osjs: Core) {
         
     Object.assign(window, {term, fm});
 
+    let d = new DummyTerminal;
+    (async (term: Terminal) => {
+        term.onData(data => d.write(data));
+        for await (let data of d.read()) term.write(data);
+    })(term.windows[0].term);
+    Object.assign(window, {d});
 
     //await new Promise(r => setTimeout(r, 1500));
     osjs.on('wasi/login', async () => {
@@ -39,8 +49,8 @@ async function startx(osjs: Core) {
         fm.windows[0].setPosition({left: 620, top: 36});
         Object.assign(window, {fm});
 
-        let refresh = () => fm.windows[0].emit('filemanager:refresh');
-        setActiveInterval(refresh, 2500);
+        //let refresh = () => fm.windows[0].emit('filemanager:refresh');
+        //setActiveInterval(refresh, 2500);
     });
 }
 
