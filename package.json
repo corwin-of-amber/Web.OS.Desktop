@@ -16,6 +16,7 @@
     "@osjs/gui": "file:ext/osjs-gui",
     "@osjs/panels": "file:ext/osjs-panels",
     "@osjs/standard-theme": "^4.0.9",
+    "wasi-kernel": "file:../wasi-kernel/wasi-kernel-3",
     "xterm": "^5.0.0"
   },
   "devDependencies": {
