@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "true"
+    "build": "true",
+    "vercel-build": "mv bin build/kremlin/"
   },
   "author": "",
   "license": "MIT",
@@ -22,10 +23,13 @@
   "devDependencies": {
     "@osjs/dev-meta": "^2.3.2",
     "@parcel/transformer-sass": "^2.7.0",
+    "@types/tar-stream": "^3.1.4",
     "copy-webpack-plugin": "^6.3.2",
     "cssnano": "^5.1.13",
+    "itertools": "^2.5.0",
     "parcel": "^2.7.0",
     "sass": "^1.55.0",
+    "tar-stream": "^3.1.7",
     "typescript": "^4.8.4"
   },
   "browserslist": [

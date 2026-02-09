@@ -27,11 +27,11 @@ import config from './config.js';
 import { WasmFsAdapter } from './wasi-fs-adapter';
 import { startx } from './startup';
 
-global.process = require('process');
-
-
 
 const init = async () => {
+  if (!global.process?.nextTick)
+    global.process = require('process');
+
   const osjs = new Core(config, {});
 
   // @ts-ignore   @todo need to add decl file

@@ -80,7 +80,7 @@ interface TerminalInterface {
     onData(handler: (data: Uint8Array | string) => void): void;
 }
 
-const wasik = new System('/node_modules/wasi-kernel/');
+const wasik = new System('node_modules/wasi-kernel/');
 
 
 export { DummyTerminal, PtyChildProcessStreamAdapter, wasik }

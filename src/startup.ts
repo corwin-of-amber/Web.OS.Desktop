@@ -1,12 +1,12 @@
 import { Core as CoreImpl, Application } from '@osjs/client';
-import distro from './distro';
+import distro, { published } from './distro';
 
 import './apps/xterm-app/index.scss';
 import 'xterm/css/xterm.css';
 
 import { PtyChildProcessStreamAdapter, wasik } from './shell/wasi-bindings';
 import { TerminalApplication } from './apps/xterm-app';
-import { DirectoryVolumeAdapter, PackageManager } from 'wasi-kernel/services';
+import { PackageManager } from 'wasi-kernel/services';
 
 
 declare interface Core extends CoreImpl {
@@ -26,6 +26,9 @@ async function startx(osjs: Core) {
 
     //const busybox = 'file:///Users/corwin/var/ext/wasm/ports/busybox/busybox.wasm';
 
+    await wasik.startup({log: "trace"});
+    osjs.emit('wasi/login', {sys: wasik});
+
     let term = await osjs.run('Terminal') as TerminalApplication,
         termRect = term.windows[0].$element.getBoundingClientRect(),
         fm = await osjs.run('FileManager', {path: {path: 'wasi:/home'}});
@@ -39,30 +42,40 @@ async function startx(osjs: Core) {
 
     Object.assign(window, {con});
 
-    await wasik.startup({log: "trace"});
+    const PKGS = {
+        ro: ['busybox', 'gnu', 'ocaml', 'ocaml-libs', 'rocq'],
+        rw: ['sample-programs']
+    };
+    const repo = process.versions?.nw ? distro : published;
 
-    let pm = new PackageManager(new DirectoryVolumeAdapter(wasik.vfs['/usr']))
-    await pm.install(distro['busybox']);
-    await pm.install(distro['ocaml']);
-    
-    let pmh = new PackageManager(new DirectoryVolumeAdapter(wasik.vfs['/home']))
-    await pmh.install(distro['sample-programs']);
-
-    await pm.install({
-        '/a.ml': "let x = 5 + 9\nlet _ = println"
+    let pm = new PackageManager(wasik.vfs),
+        dt = term.windows[0].term;
+    pm.on('progress', ev => {
+        if (ev.done) dt.write(`${' '.repeat(40)}\r`);
+        else if (ev.download) dt.write(`\x1b[0;37m downloading: ${Math.round(ev.download.downloaded / 1000)}KB\x1b[0m\r`);
     })
 
-    con.withProcess(await wasik.runWasix('/bin/busybox', {program: 'sh'}));
+    for (let [k, pkgs] of Object.entries(PKGS)) {
+        wasik.vfs.options.readonly = (k == 'ro');
+        for (let pkg of pkgs)
+            await pm.install(repo[pkg] ?? {});
+    }
 
+    con.withProcess(await wasik.runWasix('/usr/bin/busybox', {program: 'sh'}));
+
+    fm.windows[0].emit('filemanager:refresh');
+    /** @todo */
+
+    /*
     //await new Promise(r => setTimeout(r, 1500));
     osjs.on('wasi/login', async () => {
-        var fm = await osjs.run('FileManager'); //, {path: {path: 'wasi:/home'}});
+        var fm = await osjs.run('FileManager', {path: {path: 'wasi:/home'}});
         fm.windows[0].setPosition({left: 620, top: 36});
         Object.assign(window, {fm});
 
         //let refresh = () => fm.windows[0].emit('filemanager:refresh');
         //setActiveInterval(refresh, 2500);
-    });
+    });*/
 }
 
 /**
