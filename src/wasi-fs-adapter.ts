@@ -1,5 +1,5 @@
-//import { Shell } from 'basin-shell/src/shell';
-//import { SharedVolume } from 'wasi-kernel';
+import type { System } from 'wasi-kernel';
+
 type Volume = any  /** @todo */
 
 
@@ -19,14 +19,15 @@ class WasmFsAdapter {
 
     async readdir({path}, options: {}) { 
         if (!this.volume) return []; // wait for volume? new Promise(() => {});
+        
         var physical = path.replace(/^\w+:/, '');
-        var ls = await this.volume.promises.readdir(physical) as (string | {name: string})[];
+        var ls = await this.volume.readdir(physical) as (string | {name: string})[];
         return ls.map(entry => {
             var fn = typeof(entry) === 'string' ? entry : entry.name,
                 stat = this.statPhysical({path: `${physical}/${fn}`});
             return {
-                isDirectory: stat && stat.isDirectory(),
-                isFile: stat && stat.isFile(),
+                isDirectory: false, // stat && stat.isDirectory(),
+                isFile: true, // stat && stat.isFile(),
                 filename: fn,
                 path: `${path.replace(/(\/+)?$/, '/')}${fn}`,
                 size: stat ? stat.size : 0,
@@ -38,7 +39,7 @@ class WasmFsAdapter {
 
     async readfile({path}, type: string, options: {}) {
         path = path.replace(/^\w+:/, '');
-        var bytes = await this.volume.promises.readFile(path);
+        var bytes = await this.volume.readFile(path);
         return {body: bytes, mime: this.guessMimeFromFilename(path)};
     }
 
@@ -83,7 +84,7 @@ class WasmFsAdapter {
 
     attach(volume: Volume) {
         this.volume = volume;
-        volume.mkdirSync('/home', {recursive: true});
+        volume.mkdir('/home', {recursive: true});
     }
 
 /*
@@ -103,9 +104,8 @@ class WasmFsAdapter {
 */
     static factory(core) {
         var adapter = new WasmFsAdapter();
-        core.on('wasi/login', ({shell}: {shell: any}) => {
-            console.log('wasi attach', shell);
-            adapter.attach(shell.volume);
+        core.on('wasi/login', (ev: {sys: System}) => {
+            adapter.attach(ev.sys.vfs);
         });
         Object.assign(window, {adapter});
         // methods need to be bound in returned object

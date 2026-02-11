@@ -20,6 +20,7 @@ async function startx(osjs: Core) {
     if (locale.getLocale() === 'he_HE') locale.setLocale('en_EN');
 
     await import('./apps/xterm-app');
+    await import('./apps/codemirror-app');
     //await import('./apps/preview-app');
 
     await new Promise(resolve => window.requestAnimationFrame(resolve));
@@ -65,6 +66,10 @@ async function startx(osjs: Core) {
 
     fm.windows[0].emit('filemanager:refresh');
     /** @todo */
+
+    let edit = await osjs.run('CodeMirror', {}, {open: false});
+
+    Object.assign(window, {edit})
 
     /*
     //await new Promise(r => setTimeout(r, 1500));

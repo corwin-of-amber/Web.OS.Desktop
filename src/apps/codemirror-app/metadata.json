@@ -1,0 +1,13 @@
+{
+  "name": "CodeMirror",
+  "category": "editor",
+  "singleton": true,
+  "title": {
+    "en_EN": "CodeMirror"
+  },
+  "description": {
+    "en_EN": "Text and Code Editor"
+  },
+  "files": [],
+  "mimes": ["text/plain", "text/python", "text/ocaml", "text/tex", "text/sh"]
+}
