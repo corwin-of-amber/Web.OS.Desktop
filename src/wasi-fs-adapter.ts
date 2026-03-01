@@ -7,14 +7,20 @@ class WasmFsAdapter {
 
     volume: Volume
     extensions: {[ext: string]: {mime: string}}
+    prefixes: {[basename: string]: {mime: string}}
 
     constructor() {
         this.extensions = {
             '.pdf': {mime: 'application/pdf'},
             '.py': {mime: 'text/python'},
             '.ml': {mime: 'text/ocaml'},
-            '.tex': {mime: 'text/tex'}
+            '.tex': {mime: 'text/tex'},
+            '.sh': {mime: 'text/plain'}
         };
+        this.prefixes = {
+            'Makefile': {mime: 'text/plain'},
+            'trace': {mime: 'text/plain'}
+        }
     }
 
     async readdir({path}, options: {}) { 
@@ -76,9 +82,10 @@ class WasmFsAdapter {
     }
 
     guessMimeFromFilename(filename: string) {
-        var mo = filename.match(/.*([.].*)$/),
-            ext = mo ? mo[1] : '',
-            attr = this.extensions[ext];
+        var mo = filename.match(/([^.]*).*?([.][^.]*)?$/),
+            basename = mo?.[1],
+            ext = mo?.[2] ?? '',
+            attr = this.extensions[ext] ?? this.prefixes[basename];
         return (attr && attr.mime) || 'application/octet-stream';
     }
 
