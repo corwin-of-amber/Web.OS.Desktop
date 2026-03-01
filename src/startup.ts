@@ -8,17 +8,27 @@ import { PtyChildProcessStreamAdapter, wasik } from './shell/wasi-bindings';
 import { TerminalApplication } from './apps/xterm-app';
 import { PackageManager } from 'wasi-kernel/services';
 
-
 declare interface Core extends CoreImpl {
     make(key: string): any
     run(app: string, args?: {}, options?: any): Promise<Application>
 }
 
 
+Atomics.wait = (typedArray, index, value, timeout) => {
+    if (timeout <= 0) return 'timed-out';
+    if (Atomics.load(typedArray, index) !== value) return 'not-equal';
+    let end = timeout < Infinity ? performance.now() + timeout : Infinity;
+    while (Atomics.load(typedArray, index) === value) {
+      if (performance.now() > end) return 'timed-out';
+    }
+    return 'not-equal';
+};
+
 async function startx(osjs: Core) {
     const locale = osjs.make('osjs/locale');
     if (locale.getLocale() === 'he_HE') locale.setLocale('en_EN');
 
+    await import('@osjs/filemanager-application');
     await import('./apps/xterm-app');
     await import('./apps/codemirror-app');
     //await import('./apps/preview-app');
@@ -28,6 +38,12 @@ async function startx(osjs: Core) {
     //const busybox = 'file:///Users/corwin/var/ext/wasm/ports/busybox/busybox.wasm';
 
     await wasik.startup({log: "trace"});
+    Object.assign(wasik.env, {
+        'PYTHONHOME': '/usr/local',
+        'PYTHONPATH': '/usr/local/lib/python:/usr/lib',
+        'TERMINFO': '/usr/local/share/terminfo',
+        'TERM': 'xterm-256color'
+    })
     osjs.emit('wasi/login', {sys: wasik});
 
     let term = await osjs.run('Terminal') as TerminalApplication,
@@ -44,7 +60,7 @@ async function startx(osjs: Core) {
     Object.assign(window, {con});
 
     const PKGS = {
-        ro: ['busybox', 'gnu', 'ocaml', 'ocaml-libs', 'rocq'],
+        ro: ['busybox', 'gnu', 'ocaml', 'ocaml-libs', 'rocq', 'python'],
         rw: ['sample-programs']
     };
     const repo = process.versions?.nw ? distro : published;
@@ -65,7 +81,8 @@ async function startx(osjs: Core) {
     con.withProcess(await wasik.runWasix('/usr/bin/busybox', {program: 'sh'}));
 
     fm.windows[0].emit('filemanager:refresh');
-    /** @todo */
+    let refresh = () => fm.windows[0].emit('filemanager:refresh');
+    setActiveInterval(refresh, 2500);
 
     let edit = await osjs.run('CodeMirror', {}, {open: false});
 

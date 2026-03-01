@@ -76,6 +76,14 @@ const packageBundles: {[name: string]: ResourceBundle} = {
         })
     },
 
+    'python': {
+        //'/usr/bin/python': rcsfile(`${PORTS_ROOT}/python/python-3.14/cross-build/wasm32-wasip1/python.wasm`),
+        '/usr/bin/python': rcsfile(`${PORTS_ROOT}/python/python-3.14/python.wasm`),
+        '/usr/local/lib/python/': new Lazily({
+            '/': rcsfile(`${PORTS_ROOT}/python/python-3.14/lib.tar`),
+        })
+    },
+
     /*
     'coreutils': {
         '/bin/ls':               '#!/bin/coreutils/ls.wasm',
@@ -124,12 +132,16 @@ const packageBundles: {[name: string]: ResourceBundle} = {
     */
 
     'sample-programs': {
+        '/home/.ash_history':  //'python -c "import array; print(array.array(\'i\'))"\n'+
+        'ls /usr/local/lib/python/\n',
+                               
+        '/home/.python_history': 'import array\n',
         '/home/a.sh':          '#!/usr/bin/sh\n\necho script\n',
         '/home/.dashrc':       'alias ls="ls --color"\n',
         '/home/a.ml':          'let _ = print_int @@ 4 + 5;\nprint_string "\\n"\n',
         '/home/Makefile':      'hello: a.cmo\n\tocamlc $^ -o $@\n' +
                                'a.cmo: a.ml\n\tocamlc -c $^ -o $@',
-        '/home/a.py':          'import sys; print("hello", sys.version); print(list(5 * x + y for x in range(10) for y in [4, 2, 1]));\n',
+        '/home/a.py':          'import sys\n\nprint("hello", sys.version)\nprint(list(5 * x + y for x in range(10) for y in [4, 2, 1]));\n',
         '/home/doc.tex':       '\\medskip \n\nhello $x^2$ \n\n \\bye\n',
         //'/home/arrows.tex':    new Resource('/bin/tex/sample-tikz.tex')
     }
@@ -145,6 +157,9 @@ published['ocaml'][`${ocaml}/`] = new Lazily({
 });
 published['rocq']['/usr/local/lib/rocq-runtime/'] = new Lazily({
     '/': new Resource(`pm/rocq-0.tar`, 'application/tar')
+});
+published['python']['/usr/local/lib/python/'] = new Lazily({
+    '/': new Resource(`pm/python-0.tar`, 'application/tar')
 });
 
 

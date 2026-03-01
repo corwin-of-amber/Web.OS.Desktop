@@ -30,7 +30,10 @@ import { startx } from './startup';
 
 const init = async () => {
   if (!global.process?.nextTick)
-    global.process = require('process');
+    global.process = Object.assign(require('process'), {
+      /** @type {(f: Function, ...a: any[]) => void} */
+      nextTick: (f, ...a) => { Promise.resolve().then(() => f(...a)) },
+    })
 
   const osjs = new Core(config, {});
 
