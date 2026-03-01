@@ -5,6 +5,7 @@ import {name as applicationName} from './metadata.json';
 
 import { EditorView } from 'codemirror';
 import { EditorState } from '@codemirror/state';
+import { KeyMap } from '../../infra/keymap';
 
 
 function createWindow(core, proc, args) {
@@ -20,17 +21,44 @@ function createWindow(core, proc, args) {
 
     let cm = new EditorView({parent: win.$content});
     win.cm = cm;
+
+    let state = new DocumentState(cm);
+    win.docstate = state;
+
+    let km = new KeyMap({
+        'Mod-S': () => { state.save(); return true; }
+    })
+    km.attach(win.$element);
     
     if (args && args.file) {
         win.setTitle(args.file.path);
-        (async () => {
-            var text = await osjs.make('osjs/vfs').readfile(args.file, 'string');
-            cm.setState(EditorState.create({doc: text}));
-            cm.focus();
-        })();
+        state.open(args.file);
+    }
+    
+    cm.focus();
+    return win;
+}
+
+class DocumentState {
+    _vfs: any /* osjs/vfs */
+
+    constructor(public cm: EditorView, public file?: {path: string}) {
     }
 
-    return win;
+    get vfs() { return (this._vfs ??= osjs.make('osjs/vfs')); }
+
+    async open(file: {path: string}) {
+        this.file = file;
+        var text = await this.vfs
+            .readfile(this.file, 'string');
+        this.cm.setState(EditorState.create({doc: text}));
+    }
+
+    async save() {
+        if (this.file)
+            await this.vfs
+                .writefile(this.file, this.cm.state.sliceDoc());
+    }
 }
 
 //
@@ -50,8 +78,6 @@ osjs.register(applicationName, (core, args, options, metadata) => {
         console.log('codemirror attention', args, options);
         setTimeout(() => createWindow(core, proc, args), 10);
     });
-
-    console.log('codemirror start', args, options);
 
     if (options?.open !== false)
         setTimeout(() => createWindow(core, proc, args), 10);
