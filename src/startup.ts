@@ -1,4 +1,5 @@
 import { Core as CoreImpl, Application } from '@osjs/client';
+import { PackageManager } from 'wasi-kernel/services';
 import distro, { published } from './distro';
 
 import './apps/xterm-app/index.scss';
@@ -25,33 +26,43 @@ Atomics.wait = (typedArray, index, value, timeout) => {
 };
 
 async function startx(osjs: Core) {
+    let accel = {};
+    initializeKeyBindings(accel);
+
     const locale = osjs.make('osjs/locale');
     if (locale.getLocale() === 'he_HE') locale.setLocale('en_EN');
 
-    await import('@osjs/filemanager-application');
     await import('./apps/xterm-app');
     await import('./apps/codemirror-app');
     //await import('./apps/preview-app');
 
     await new Promise(resolve => window.requestAnimationFrame(resolve));
 
-    //const busybox = 'file:///Users/corwin/var/ext/wasm/ports/busybox/busybox.wasm';
+    let term = await osjs.run('Terminal') as TerminalApplication,
+        dt = term.windows[0].term;
+          
+    accel['1'] = term;
+    dt.write(`\x1b[0;37mWait for it...\x1b[0m`);
 
-    await wasik.startup({log: "trace"});
+    await wasik.startup({log: "warn"});
     Object.assign(wasik.env, {
         'PYTHONHOME': '/usr/local',
-        'PYTHONPATH': '/usr/local/lib/python:/usr/lib',
+        'PYTHONPATH': '/usr/local/lib/python',
         'TERMINFO': '/usr/local/share/terminfo',
-        'TERM': 'xterm-256color'
+        'TERM': 'xterm-256color',
+        'LEAN_NUM_THREADS': '1'
     })
-    osjs.emit('wasi/login', {sys: wasik});
+    osjs.emit('wasik/boot', {sys: wasik});
+    osjs.singleton('wasik', () => ({sys: wasik}));
 
-    let term = await osjs.run('Terminal') as TerminalApplication,
-        termRect = term.windows[0].$element.getBoundingClientRect(),
+    Object.assign(window, { wasik });
+
+    let termRect = term.windows[0].$element.getBoundingClientRect(),
         fm = await osjs.run('FileManager', {path: {path: 'wasi:/home'}});
 
     fm.windows[0].setPosition({left: termRect.right, top: Math.max(33, termRect.top - 33)});
-        
+    dt.write(`\r${' '.repeat(40)}\r`);
+
     Object.assign(window, {term, fm, wasik});
 
     let con = new PtyChildProcessStreamAdapter()
@@ -60,13 +71,12 @@ async function startx(osjs: Core) {
     Object.assign(window, {con});
 
     const PKGS = {
-        ro: ['busybox', 'gnu', 'ocaml', 'ocaml-libs', 'rocq', 'python'],
+        ro: ['busybox', 'gnu', 'ocaml', 'ocaml-libs', 'rocq', 'python', 'lean'],
         rw: ['sample-programs']
     };
     const repo = process.versions?.nw ? distro : published;
 
-    let pm = new PackageManager(wasik.vfs),
-        dt = term.windows[0].term;
+    let pm = new PackageManager(wasik.vfs);
     pm.on('progress', ev => {
         if (ev.done) dt.write(`${' '.repeat(40)}\r`);
         else if (ev.download) dt.write(`\x1b[0;37m downloading: ${Math.round(ev.download.downloaded / 1000)}KB\x1b[0m\r`);
@@ -86,18 +96,17 @@ async function startx(osjs: Core) {
 
     let edit = await osjs.run('CodeMirror', {}, {open: false});
 
-    Object.assign(window, {edit})
+    Object.assign(window, { edit })
+}
 
-    /*
-    //await new Promise(r => setTimeout(r, 1500));
-    osjs.on('wasi/login', async () => {
-        var fm = await osjs.run('FileManager', {path: {path: 'wasi:/home'}});
-        fm.windows[0].setPosition({left: 620, top: 36});
-        Object.assign(window, {fm});
-
-        //let refresh = () => fm.windows[0].emit('filemanager:refresh');
-        //setActiveInterval(refresh, 2500);
-    });*/
+function initializeKeyBindings(accel: {[k: string]: any}) {
+    window.addEventListener('keydown', (ev) => {
+        if (ev.metaKey && ev.code == 'KeyR') (<any>window).k.reload();// typeof k !== 'undefined' ? k.reload() : location.reload();
+        if (ev.metaKey && ev.code == 'Digit1') {
+            let win = accel['1']?.windows[0];
+            if (win) win.focus() || win.blur();
+        }
+    }, {capture: true});
 }
 
 /**

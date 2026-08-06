@@ -15,6 +15,7 @@ class WasmFsAdapter {
             '.py': {mime: 'text/python'},
             '.ml': {mime: 'text/ocaml'},
             '.tex': {mime: 'text/tex'},
+            '.lean': {mime: 'text/plain'},
             '.sh': {mime: 'text/plain'}
         };
         this.prefixes = {
@@ -111,7 +112,7 @@ class WasmFsAdapter {
 */
     static factory(core) {
         var adapter = new WasmFsAdapter();
-        core.on('wasi/login', (ev: {sys: System}) => {
+        core.on('wasik/boot', (ev: {sys: System}) => {
             adapter.attach(ev.sys.vfs);
         });
         Object.assign(window, {adapter});

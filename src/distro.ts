@@ -36,8 +36,8 @@ const packageBundles: {[name: string]: ResourceBundle} = {
 
     'ocaml': {
         '/usr/bin/ocamlrun': rcsfile(`${OCAML_ROOT}/runtime/ocamlrun.wasm`),
-        '/usr/bin/ocaml': new Symlink('/usr/local/lib/ocaml/ocaml'),
-        '/usr/bin/ocamlc': new Symlink('/usr/local/lib/ocaml/ocamlc'),
+        '/usr/bin/ocaml': new Symlink(`${ocaml}/ocaml`),
+        '/usr/bin/ocamlc': new Symlink(`${ocaml}/ocamlc`),
         '/usr/lib/dllcamlstr.so': rcsfile(`${OCAML_ROOT}/otherlibs/str/dllcamlstr.wasm`),
         '/usr/lib/dllunix.so': rcsfile(`${OCAML_ROOT}/otherlibs/unix/dllunix.wasm`),
         '/usr/lib/dllthreads.so': rcsfile(`${OCAML_ROOT}/otherlibs/systhreads/dllthreads.wasm`),
@@ -64,7 +64,7 @@ const packageBundles: {[name: string]: ResourceBundle} = {
     },
 
     'rocq': {
-        '/usr/bin/rocq': '#!/usr/bin/sh\n\nOCAMLFIND_CONF=/usr/local/etc/findlib.conf ocamlrun /usr/local/lib/rocq-runtime/rocqworker.byte "$@" -boot -R /usr/local/lib/rocq-runtime ""\n',
+        '/usr/bin/rocq': '#!/usr/bin/sh\n\nOCAMLFIND_CONF=/usr/local/etc/findlib.conf ocamlrun /usr/local/lib/rocq-runtime/rocqworker.byte --kind=repl -boot -R /usr/local/lib/rocq-runtime "" "$@"\n',
         '/usr/lib/dlllib_stubs.so': rcsfile(`${JSCOQ_WORKDIR}/_build/wasm/dlllib_stubs.wasm`),
         '/usr/lib/dllcoqrun_stubs.so': rcsfile(`${JSCOQ_WORKDIR}/_build/wasm/dllcoqrun_stubs.wasm`),
 
@@ -79,9 +79,15 @@ const packageBundles: {[name: string]: ResourceBundle} = {
     'python': {
         //'/usr/bin/python': rcsfile(`${PORTS_ROOT}/python/python-3.14/cross-build/wasm32-wasip1/python.wasm`),
         '/usr/bin/python': rcsfile(`${PORTS_ROOT}/python/python-3.14/python.wasm`),
-        '/usr/local/lib/python/': new Lazily({
-            '/': rcsfile(`${PORTS_ROOT}/python/python-3.14/lib.tar`),
-        })
+        '/usr/local/lib/python/': new Lazily(rcsfile(`${PORTS_ROOT}/python/python-3.14/lib.tar`)),
+    },
+
+    'lean': {
+        '/usr/bin/lean': rcsfile(`~/var/ext/lean4/bin/lean.wasm`),
+        '/usr/bin/lake': rcsfile(`~/var/ext/lean4/bin/lake.wasm`),
+        '/usr/lib/lean/': new Lazily(rcsfile(`~/var/ext/lean4/lib/Init32.tar`)),
+        '/dev/urandom': '+'.repeat(8192),
+        '/etc/localtime': rcsfile('/etc/localtime'),  /* using local system's?.. */
     },
 
     /*
@@ -132,9 +138,19 @@ const packageBundles: {[name: string]: ResourceBundle} = {
     */
 
     'sample-programs': {
-        '/home/.ash_history':  //'python -c "import array; print(array.array(\'i\'))"\n'+
-        'ls /usr/local/lib/python/\n',
-                               
+        '/home/.ash_history':  
+            'python -c "import array; print(array.array(\'i\'))"\n' +
+            'lean /home/a.lean -o /home/a.olean\n',
+                             
+        '/home/a.lean': 'module\n\ndef n : Nat := 0\n#check n + 0\n',
+        '/home/b.lean': 'prelude\n\n import a',
+        '/home/c.lean': 'module\nprelude\npublic import Init.Coe\n',
+        '/home/tut.lean': rcsfile(`~/var/ext/lean4/tmp/tut.lean`),
+        '/home/lakefile.toml': rcsfile(`~/var/ext/lean4/tmp/ab/lakefile.toml`),
+        '/home/AB.lean': rcsfile(`~/var/ext/lean4/tmp/ab/AB.lean`),
+        '/home/AB/a.lean': rcsfile(`~/var/ext/lean4/tmp/ab/AB/a.lean`),
+        '/home/AB/b.lean': rcsfile(`~/var/ext/lean4/tmp/ab/AB/b.lean`),
+
         '/home/.python_history': 'import array\n',
         '/home/a.sh':          '#!/usr/bin/sh\n\necho script\n',
         '/home/.dashrc':       'alias ls="ls --color"\n',
