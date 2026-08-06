@@ -17,7 +17,10 @@
     "@osjs/gui": "file:ext/osjs-gui",
     "@osjs/panels": "file:ext/osjs-panels",
     "@osjs/standard-theme": "^4.0.9",
+    "@wasmer/sdk": "file:../../ext/wasm/wasmer-js",
     "codemirror": "^6.0.2",
+    "vue": "^3.5.41",
+    "vue-facing-decorator": "^4.0.1",
     "wasi-kernel": "file:../wasi-kernel/wasi-kernel-3",
     "xterm": "^5.0.0"
   },
@@ -32,10 +35,20 @@
     "sass-loader": "^16.0.7",
     "tar-stream": "^3.1.7",
     "typescript": "^5.9.3",
-    "webpack": "^5.105.1"
+    "webpack": "^5.105.1",
+    "webpack-cli": "^6.0.1"
   },
   "browserslist": [
     "Chrome 78"
   ],
-  "_comment": "Run `npm dedupe` to flatten deps"
+  "_comment": "Run `npm dedupe` to flatten deps",
+  "allowScripts": {
+    "lmdb@2.5.2": true,
+    "lmdb@2.8.5": true,
+    "msgpackr-extract@3.0.3": true,
+    "@swc/core@1.15.8": true,
+    "@parcel/watcher@2.5.4": true,
+    "fsevents@1.2.13": true,
+    "esbuild": true
+  }
 }

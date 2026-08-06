@@ -1,0 +1,13 @@
+{
+  "name": "Lean LSP (worker)",
+  "category": "programming",
+  "singleton": true,
+  "title": {
+    "en_EN": "Lean"
+  },
+  "description": {
+    "en_EN": "Lean LSP Worker Interface"
+  },
+  "files": [],
+  "mimes": ["text/plain"]
+}

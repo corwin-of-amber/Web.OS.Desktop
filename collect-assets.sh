@@ -16,4 +16,5 @@ node -p 'JSON.stringify([
            require("@osjs/filemanager-application/metadata.json"),
            require("./src/apps/xterm-app/metadata.json"),
            require("./src/apps/codemirror-app/metadata.json"),
+           require("./src/apps/lean-demo-app/metadata.json"),
          ])' > $D/metadata.json

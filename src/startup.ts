@@ -7,7 +7,7 @@ import 'xterm/css/xterm.css';
 
 import { PtyChildProcessStreamAdapter, wasik } from './shell/wasi-bindings';
 import { TerminalApplication } from './apps/xterm-app';
-import { PackageManager } from 'wasi-kernel/services';
+import { LeanApplication } from './apps/lean-demo-app';
 
 declare interface Core extends CoreImpl {
     make(key: string): any
@@ -34,6 +34,7 @@ async function startx(osjs: Core) {
 
     await import('./apps/xterm-app');
     await import('./apps/codemirror-app');
+    await import('./apps/lean-demo-app');
     //await import('./apps/preview-app');
 
     await new Promise(resolve => window.requestAnimationFrame(resolve));
@@ -89,6 +90,8 @@ async function startx(osjs: Core) {
     }
 
     con.withProcess(await wasik.runWasix('/usr/bin/busybox', {program: 'sh'}));
+
+    //let lean = await osjs.run('Lean LSP (worker)') as LeanApplication;
 
     fm.windows[0].emit('filemanager:refresh');
     let refresh = () => fm.windows[0].emit('filemanager:refresh');
