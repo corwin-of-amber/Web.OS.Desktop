@@ -7,9 +7,9 @@
     "lib": ["es2022", "dom", "dom.iterable", "webworker"],
     "esModuleInterop": true,
     "resolveJsonModule": true,
-    "downlevelIteration": true,
     "allowSyntheticDefaultImports": true,
-    "checkJs": true
+    "checkJs": true,
+    "strict": false
   },
   "exclude": ["build", "dist"]
 }

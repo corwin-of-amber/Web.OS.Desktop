@@ -6,6 +6,11 @@ export default {
     }
   },
   standalone: true,
+  desktop: {
+    settings: {
+      sounds: undefined
+    }
+  },
   /*
   packages: {
     manifest: false,
