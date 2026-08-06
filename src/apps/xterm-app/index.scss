@@ -32,5 +32,13 @@
         border: 1px solid #aaa;
       }
     }
+
+    @supports not (selector(::-webkit-scrollbar-track-piece)) {
+      /* For browsera that do not support scrollbar styles */
+      .xterm-rows {
+        width: calc(100% + 4px);
+        border-right: 12px solid #fff3;
+      }
+    }
   }
 }

@@ -92,7 +92,7 @@ const createTerminal = (core: Core, proc: Application, index: number) => {
         .on('maximize', fit)
         .on('restore', fit)
         .on('moved', () => term.focus())
-        .on('focus', () => term.focus())
+        .on('focus', () => setTimeout(() => term.focus(), 1))
         .on('blur', () => term.blur())
         .on('render', () => {
             snap();
