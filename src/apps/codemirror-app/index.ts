@@ -11,9 +11,9 @@ import { KeyMap } from '../../infra/keymap';
 function createWindow(core, proc, args) {
     var win = proc.createWindow({
         title: proc.metadata.title.en_EN,
+        position: {top: 0.5, left: 0.1},
         dimension: {width: 500, height: 280},
         attributes: {
-            gravity: 'bottom',
             classNames: ['Window_CodeMirror']
         }
     });
