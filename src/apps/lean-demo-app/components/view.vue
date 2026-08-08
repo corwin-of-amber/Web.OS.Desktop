@@ -4,7 +4,11 @@
       <thead>
         <tr>
           <th>#</th>
-          <th>Payload</th>
+          <th>Payload
+            <div class="minibar">
+              <button @click="minibarAction('poke')">poke</button>
+            </div>
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -20,7 +24,7 @@
 <script lang="ts">
 import { Vue, Component, Ref, toNative } from 'vue-facing-decorator';
 
-@Component({})
+@Component({emits: ['toolbar-action']})
 class IView extends Vue {
     items: {id?: number}[] = []
 
@@ -33,6 +37,10 @@ class IView extends Vue {
 
     payload(msg: object) {
         return JSON.stringify(msg, null, 1);
+    }
+
+    minibarAction(type: string) {
+      this.$emit('toolbar-action', {type});
     }
 }
 
@@ -57,5 +65,15 @@ th,
 }
 thead {
   background: #f5f5f5;
+  position: sticky;
+  top: 0;
+}
+thead th {
+  border-top: none;
+}
+div.minibar {
+  float: right;
+  margin-top: -3px;
+  margin-bottom: -1em;
 }
 </style>

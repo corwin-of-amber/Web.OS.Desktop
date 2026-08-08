@@ -5,7 +5,7 @@ import { System } from 'wasi-kernel';
 import { name as applicationName } from './metadata.json';
 
 import { LeanWorkerProcess } from './transport';
-import View, { IView } from './view.vue';
+import View, { IView } from './components/view.vue';
 
 
 class LeanApplication extends Application {
@@ -30,6 +30,7 @@ class LeanApplication extends Application {
         });
         Object.setPrototypeOf(win, LeanWindow.prototype);
         win.render();
+        win.on('toolbar-action', () => this.lworker.poke());
         return win;
     }
 
@@ -58,10 +59,20 @@ class LeanWindow extends Window {
     static readonly DEFAULT_SZ = {width: 360, height: 480};
     view: IView
 
+    get rootProps() {
+        return {
+            onToolbarAction: (ev: {type: string}) => this.onToolbarAction(ev)
+        };
+    }
+
     render() {
         this.setDimension(LeanWindow.DEFAULT_SZ);
-        this.view = <any>Vue.createApp(View).mount(this.$content);
+        this.view = <any>Vue.createApp(View, this.rootProps).mount(this.$content);
         return super.render();
+    }
+
+    onToolbarAction(ev: {type: string}) {
+        this.emit('toolbar-action', ev);
     }
 }
 

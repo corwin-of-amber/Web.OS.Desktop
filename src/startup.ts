@@ -51,6 +51,7 @@ async function startx(osjs: Core) {
         'PYTHONPATH': '/usr/local/lib/python',
         'TERMINFO': '/usr/local/share/terminfo',
         'TERM': 'xterm-256color',
+        'LEAN_PATH': '/usr/lib/lean',  // needed for stage-0 Lean
         'LEAN_NUM_THREADS': '1'
     })
     osjs.emit('wasik/boot', {sys: wasik});

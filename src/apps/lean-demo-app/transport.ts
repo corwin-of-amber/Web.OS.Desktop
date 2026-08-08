@@ -48,6 +48,11 @@ class LeanWorkerProcess {
             yield msg;
         }
     }
+
+    poke() {
+        this.transport.m.hover.id++;
+        this.send(this.transport.m.hover);
+    }
 }
 
 class LeanWorkerTransport {
@@ -102,20 +107,6 @@ class LeanWorkerTransport {
         let s = JSON.stringify(msg);
         return `Content-Length: ${s.length}\r\n\r\n${s}`;
     }
-
-    /*
-    async protocolExperiment() {
-
-        for await (let msg of tee[0].consume()) {
-            if (msg.method == 'workspace/inlayHint/refresh') {
-                dt.write('«-sending hover-»\n');
-                m.hover.id += 1;
-                cp.write(q(m.hover));
-                break;
-            }
-        }        
-    }
-    */
 }
 
 
