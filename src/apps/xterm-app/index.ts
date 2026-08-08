@@ -51,9 +51,11 @@ const createTerminal = (core: Core, proc: Application, index: number) => {
         var box = term.element.querySelector('.xterm-screen').getBoundingClientRect();
         win.$content.style.width = `calc(${box.width + 6}px + 1em)`; // make room for padding and scrollbar
 
-        win.resizeFit(win.$content);
-        // Bug in resizeFit -- does not account for border
-        win.setDimension({width: win.state.dimension.width + 2, height: win.state.dimension.height + 2});
+        requestAnimationFrame(() => {
+            win.resizeFit(win.$content);
+            // Bug in resizeFit -- does not account for border
+            win.setDimension({width: win.state.dimension.width + 2, height: win.state.dimension.height + 2});
+        });
     }
 
     const render = ($content: HTMLElement) => {
@@ -92,7 +94,7 @@ const createTerminal = (core: Core, proc: Application, index: number) => {
         .on('maximize', fit)
         .on('restore', fit)
         .on('moved', () => term.focus())
-        .on('focus', () => setTimeout(() => term.focus(), 1))
+        .on('focus', () => requestAnimationFrame(() => term.focus()))
         .on('blur', () => term.blur())
         .on('render', () => {
             snap();
@@ -100,8 +102,8 @@ const createTerminal = (core: Core, proc: Application, index: number) => {
         })
         .render(render) as TerminalWindow;
 
-    core.on('osjs/window:change', (target) => {
-        if (target === win)
+    core.on('osjs/window:change', (target: Window, eventType: string) => {
+        if (target === win && eventType == 'resizing')
             win.$content.style.width = '';
     });
 
