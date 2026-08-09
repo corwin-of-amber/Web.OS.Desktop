@@ -140,12 +140,13 @@ const packageBundles: {[name: string]: ResourceBundle} = {
     'sample-programs': {
         '/home/.ash_history':  
             'python -c "import array; print(array.array(\'i\'))"\n' +
-            'lean /home/a.lean -o /home/a.olean\n',
+            'lean a.lean -o a.olean\n',
                              
         '/home/a.lean': 'module\n\ndef n : Nat := 0\n#check n + 0\n',
         '/home/b.lean': 'prelude\n\n import a',
         '/home/c.lean': 'module\nprelude\npublic import Init.Coe\n',
         '/home/tut.lean': rcsfile(`~/var/ext/lean4/tmp/tut.lean`),
+        '/home/knaves.lean': rcsfile(`~/var/ext/lean4/tmp/knaves.lean`),
         '/home/lakefile.toml': rcsfile(`~/var/ext/lean4/tmp/ab/lakefile.toml`),
         '/home/AB.lean': rcsfile(`~/var/ext/lean4/tmp/ab/AB.lean`),
         '/home/AB/a.lean': rcsfile(`~/var/ext/lean4/tmp/ab/AB/a.lean`),

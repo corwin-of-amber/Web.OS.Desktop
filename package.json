@@ -19,6 +19,7 @@
     "@osjs/standard-theme": "^4.0.9",
     "@wasmer/sdk": "file:../../ext/wasm/wasmer-js",
     "codemirror": "^6.0.2",
+    "codemirror-lean4-lsp": "file:../../tmp/lean-mirror",
     "vue": "^3.5.41",
     "vue-facing-decorator": "^4.0.1",
     "wasi-kernel": "file:../wasi-kernel/wasi-kernel-3",

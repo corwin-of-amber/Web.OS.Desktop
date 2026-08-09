@@ -30,12 +30,14 @@ class LeanApplication extends Application {
         });
         Object.setPrototypeOf(win, LeanWindow.prototype);
         win.render();
-        win.on('toolbar-action', () => this.lworker.poke());
+        win.on('toolbar-action', ev => this.onToolbarAction(ev));
         return win;
     }
 
     start(wasik: System) {
         this.lworker = new LeanWorkerProcess(wasik);
+        this.core.on('cm/poke', ev => 
+            this.lworker.onCodeMirrorPoke(ev)?.then(console.warn));
         (async () => {
             await this.lworker.ready;
             for await (let msg of this.lworker.experiment()) {
@@ -51,6 +53,12 @@ class LeanApplication extends Application {
     destroy(remove?: boolean): void {
         this.stop();
         super.destroy(remove);
+    }
+
+    onToolbarAction(ev: {type: string}) {
+        switch (ev.type) {
+            case 'poke': this.lworker.poke(); break;
+        }
     }
 }
 

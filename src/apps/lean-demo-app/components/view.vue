@@ -57,11 +57,13 @@ table {
   width: 100%;
   border-collapse: collapse;
 }
-th,
- td {
+th, td {
   border: 1px solid #ccc;
   padding: 8px;
   text-align: left;
+}
+td.col--payload {
+  word-break: break-word;
 }
 thead {
   background: #f5f5f5;
