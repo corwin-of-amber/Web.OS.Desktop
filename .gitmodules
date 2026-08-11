@@ -10,3 +10,6 @@
 [submodule "ext/osjs-filemanager-application"]
 	path = ext/osjs-filemanager-application
 	url = git@github.com:corwin-of-amber/osjs-filemanager-application.git
+[submodule "ext/lean-mirror"]
+	path = ext/lean-mirror
+	url = git@github.com:ejgallego/lean-mirror.git

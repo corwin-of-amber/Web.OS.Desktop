@@ -17,9 +17,8 @@
     "@osjs/gui": "file:ext/osjs-gui",
     "@osjs/panels": "file:ext/osjs-panels",
     "@osjs/standard-theme": "^4.0.9",
-    "@wasmer/sdk": "file:../../ext/wasm/wasmer-js",
     "codemirror": "^6.0.2",
-    "codemirror-lean4-lsp": "file:../../tmp/lean-mirror",
+    "codemirror-lean4-lsp": "file:ext/lean-mirror",
     "vue": "^3.5.41",
     "vue-facing-decorator": "^4.0.1",
     "wasi-kernel": "file:../wasi-kernel/wasi-kernel-3",
@@ -50,6 +49,12 @@
     "@swc/core@1.15.8": true,
     "@parcel/watcher@2.5.4": true,
     "fsevents@1.2.13": true,
-    "esbuild": true
+    "fsevents@2.3.2": true,
+    "fsevents@2.3.3": true,
+    "esbuild": true,
+    "undici@7.29.0": true,
+    "@codemirror/lsp-client@6.2.5": true,
+    "@codemirror/lang-rust@6.0.2": true,
+    "file:ext/osjs-client": true
   }
 }
